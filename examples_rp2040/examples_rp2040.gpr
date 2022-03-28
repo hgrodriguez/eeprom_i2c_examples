@@ -4,7 +4,7 @@ with "tiny_rp2040_bsp.gpr";
 
 with "config/examples_rp2040_config.gpr";
 
-with "../../eeprom_i2c/eeprom_i2c.gpr";
+with "eeprom_i2c.gpr";
 
 project Examples_Rp2040 is
 
