@@ -14,6 +14,7 @@ with Pico;
 
 with Delay_Provider;
 with EEPROM_I2C.MC24XX01;
+--  with EEPROM_I2C.MC24XX02;
 --  with EEPROM_I2C.MC24XX16;
 
 with Helpers;
@@ -28,7 +29,11 @@ procedure Pico_Write_Full_And_Check is
      (Delay_Provider.Delay_MS'Access,
       EEPROM_I2C.MC24XX01.I2C_DEFAULT_ADDRESS,
       Eeprom_I2C_Port'Access);
---     Eeprom_16K       : EEPROM_I2C.MC24XX16.EEPROM_Memory_MC24XX16
+--     Eeprom_2K       : EEPROM_I2C.MC24XX02.EEPROM_Memory_MC24XX02
+--       (Delay_Provider.Delay_MS'Access,
+--        EEPROM_I2C.MC24XX02.I2C_DEFAULT_ADDRESS,
+--        Eeprom_I2C_Port'Access);
+   --     Eeprom_16K       : EEPROM_I2C.MC24XX16.EEPROM_Memory_MC24XX16
 --       (Delay_Provider.Delay_MS'Access,
 --        EEPROM_I2C.MC24XX16.I2C_DEFAULT_ADDRESS,
 --        Eeprom_I2C_Port'Access);
