@@ -65,8 +65,4 @@ package Helpers is
                           Actual     : HAL.I2C.I2C_Data;
                           CB_LED_Off : LED_Off);
 
-   procedure ItsyBitsy_Led_Off;
-   procedure Pico_Led_Off;
-   procedure Tiny_Led_Off;
-
 end Helpers;

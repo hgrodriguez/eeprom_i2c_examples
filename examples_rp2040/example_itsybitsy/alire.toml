@@ -1,4 +1,4 @@
-name = "examples_rp2040"
+name = "example_itsybitsy"
 description = "Examples for EEPROM_I2C crate"
 version = "1.0.0"
 licenses = "BSD-3-Clause"
@@ -9,6 +9,8 @@ maintainers-logins = ["hgrodriguez"]
 tags = ["embedded", "rp2040", "eeprom", "i2c"]
 website = "https://github.com/hgrodriguez/eeprom_i2c_examples"
 
+executables = ["example_itsybitsy"]
+
 [gpr-set-externals]
 #  I want all dependencies with full debug information
 ATOMIC_BUILD_MODE="debug"
@@ -17,12 +19,16 @@ CORTEXM_BUILD_MODE="debug"
 EDC_CLIENT_BUILD_MODE="debug"
 EEPROM_I2C_BUILD_MODE="debug"
 ITSYBITSY_RP2040_BSP_BUILD_MODE="debug"
-PICO_BSP_BUILD_MODE="debug"
 RP2040_HAL_BUILD_MODE="debug"
 USB_EMBEDDED_BUILD_MODE="debug"
 
 [[depends-on]]  # Added by alr
 gnat_arm_elf = "^12"  # Added by alr
+
+[[depends-on]]  # Added by alr
+itsybitsy_rp2040_bsp = "~0.2.0"  # Added by alr
+[[pins]]
+itsybitsy_rp2040_bsp = { path='../../../itsybitsy_rp2040_bsp' }
 
 [[depends-on]]  # Added by alr
 eeprom_i2c = "^4"  # Added by alr

@@ -10,10 +10,6 @@
 with RP.Device;
 with RP.Clock;
 
-with ItsyBitsy;
-with Pico;
-with Tiny;
-
 package body Helpers is
 
    use HAL;
@@ -281,7 +277,7 @@ package body Helpers is
 
       Helpers.Verify_Data (Expected => Ref_Data,
                            Actual => Read_Data,
-                           CB_LED_Off => Helpers.Pico_Led_Off'Access);
+                           CB_LED_Off => CB_LED_Off);
    end Check_Header_And_Full_Pages;
 
    procedure Check_Header_And_Tailing
@@ -543,20 +539,5 @@ package body Helpers is
          end if;
       end loop;
    end Verify_Data;
-
-   procedure ItsyBitsy_Led_Off is
-   begin
-      ItsyBitsy.LED.Clear;
-   end ItsyBitsy_Led_Off;
-
-   procedure Pico_Led_Off is
-   begin
-      Pico.LED.Clear;
-   end Pico_Led_Off;
-
-   procedure Tiny_Led_Off is
-   begin
-      Tiny.Switch_Off (This => Tiny.LED_Red);
-   end Tiny_Led_Off;
 
 end Helpers;

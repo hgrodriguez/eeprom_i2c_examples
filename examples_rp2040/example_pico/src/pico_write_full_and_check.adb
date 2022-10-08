@@ -11,32 +11,38 @@ with RP.GPIO;
 with RP.I2C_Master;
 
 with Pico;
+with Pico_LED;
 
 with Delay_Provider;
-with EEPROM_I2C.MC24XX01;
+--  with EEPROM_I2C.MC24XX01;
 --  with EEPROM_I2C.MC24XX02;
 --  with EEPROM_I2C.MC24XX16;
+with EEPROM_I2C.MC24XX64;
 
 with Helpers;
 
 procedure Pico_Write_Full_And_Check is
 
    --  Definitions of the connections to the EEPROM
-   Eeprom_I2C_Port : RP.I2C_Master.I2C_Master_Port renames RP.Device.I2C_0;
+   Eeprom_I2C_Port : RP.I2C_Master.I2C_Master_Port renames RP.Device.I2CM_0;
 
    --  potential test targets
-   Eeprom_1K       : EEPROM_I2C.MC24XX01.EEPROM_Memory_MC24XX01
-     (Delay_Provider.Delay_MS'Access,
-      EEPROM_I2C.MC24XX01.I2C_DEFAULT_ADDRESS,
-      Eeprom_I2C_Port'Access);
+--     Eeprom_1K       : EEPROM_I2C.MC24XX01.EEPROM_Memory_MC24XX01
+--       (Delay_Provider.Delay_MS'Access,
+--        EEPROM_I2C.MC24XX01.I2C_DEFAULT_ADDRESS,
+--        Eeprom_I2C_Port'Access);
 --     Eeprom_2K       : EEPROM_I2C.MC24XX02.EEPROM_Memory_MC24XX02
 --       (Delay_Provider.Delay_MS'Access,
 --        EEPROM_I2C.MC24XX02.I2C_DEFAULT_ADDRESS,
 --        Eeprom_I2C_Port'Access);
-   --     Eeprom_16K       : EEPROM_I2C.MC24XX16.EEPROM_Memory_MC24XX16
+--     Eeprom_16K       : EEPROM_I2C.MC24XX16.EEPROM_Memory_MC24XX16
 --       (Delay_Provider.Delay_MS'Access,
 --        EEPROM_I2C.MC24XX16.I2C_DEFAULT_ADDRESS,
 --        Eeprom_I2C_Port'Access);
+   Eeprom_64K       : EEPROM_I2C.MC24XX64.EEPROM_Memory_MC24XX64
+     (Delay_Provider.Delay_MS'Access,
+      EEPROM_I2C.MC24XX64.I2C_DEFAULT_ADDRESS,
+      Eeprom_I2C_Port'Access);
 
    Eeprom_SDA       : RP.GPIO.GPIO_Point renames Pico.GP0;
    Eeprom_SCL       : RP.GPIO.GPIO_Point renames Pico.GP1;
@@ -48,7 +54,7 @@ procedure Pico_Write_Full_And_Check is
 
    --  EEPROM under test
    --  renames help to minimize the changes in the code below
-   EEPROM : EEPROM_I2C.EEPROM_Memory'Class := Eeprom_1K;
+   EEPROM : EEPROM_I2C.EEPROM_Memory'Class := Eeprom_64K;
 
 begin
    Helpers.Initialize (Eeprom_SDA,
@@ -65,27 +71,27 @@ begin
 
    Helpers.
      Check_Full_Size (EEPROM,
-                      Helpers.Pico_Led_Off'Access);
+                      Pico_LED.Pico_Led_Off'Access);
 
    --  headers involved
    Helpers.
      Check_Header_Only (EEPROM,
-                        Helpers.Pico_Led_Off'Access);
+                        Pico_LED.Pico_Led_Off'Access);
    Helpers.
      Check_Header_And_Full_Pages (EEPROM,
-                                  Helpers.Pico_Led_Off'Access);
+                                  Pico_LED.Pico_Led_Off'Access);
    Helpers.
      Check_Header_And_Tailing (EEPROM,
-                               Helpers.Pico_Led_Off'Access);
+                               Pico_LED.Pico_Led_Off'Access);
    Helpers.
      Check_Header_And_Full_Pages_And_Tailing (EEPROM,
-                                              Helpers.Pico_Led_Off'Access);
+                                              Pico_LED.Pico_Led_Off'Access);
 
    --  full pages involved
    Helpers.
      Check_Full_Pages (EEPROM,
-                       Helpers.Pico_Led_Off'Access);
+                       Pico_LED.Pico_Led_Off'Access);
    Helpers.
      Check_Full_Pages_And_Tailing (EEPROM,
-                                   Helpers.Pico_Led_Off'Access);
+                                   Pico_LED.Pico_Led_Off'Access);
 end Pico_Write_Full_And_Check;

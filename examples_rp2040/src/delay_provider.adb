@@ -10,11 +10,16 @@ with RP.Timer;
 package body Delay_Provider is
 
    procedure Delay_MS (MS : Integer) is
-      My_Delay : RP.Timer.Delays;
+      My_Delay   : constant RP.Timer.Time
+        := RP.Timer.Milliseconds (T => Natural (MS));
+      My_NowTime : constant RP.Timer.Time
+        := RP.Timer.Clock;
+
+      use RP.Timer;
+
    begin
       if MS > 0 then
-         RP.Timer.Delay_Milliseconds (This => My_Delay,
-                                      Ms   => MS);
+         RP.Timer.Busy_Wait_Until (Deadline => My_NowTime + My_Delay);
       end if;
    end Delay_MS;
 
