@@ -11,4 +11,9 @@ package Configuration is
    Eeprom_SDA      : RP.GPIO.GPIO_Point renames Pico.GP0;
    Eeprom_SCL      : RP.GPIO.GPIO_Point renames Pico.GP1;
 
+   --  Definitions for the DIP switch ports to read
+   DIP_1 : RP.GPIO.GPIO_Point renames Pico.GP12;
+   DIP_2 : RP.GPIO.GPIO_Point renames Pico.GP13;
+   DIP_4 : RP.GPIO.GPIO_Point renames Pico.GP14;
+   DIP_8 : RP.GPIO.GPIO_Point renames Pico.GP15;
 end Configuration;

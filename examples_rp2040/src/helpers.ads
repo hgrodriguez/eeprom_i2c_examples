@@ -6,6 +6,8 @@
 --
 --  SPDX-License-Identifier: BSD-3-Clause
 --
+with HAL;
+
 with RP.GPIO;
 
 with EEPROM_I2C;
@@ -23,6 +25,8 @@ package Helpers is
 
    procedure Wait_For_Trigger_Fired;
    procedure Wait_For_Trigger_Resume;
+
+   function Eeprom_Code_Selected return HAL.UInt4;
 
    procedure Check_Full_Size (EEP_Enum   : EEPROM_I2C.EEPROM_Chip;
                               CB_LED_Off : LED_Off);

@@ -6,6 +6,8 @@
 --
 --  SPDX-License-Identifier: BSD-3-Clause
 --
+with HAL;
+
 with RP.GPIO;
 
 with Pico;
@@ -19,7 +21,9 @@ with Helpers;
 
 procedure Pico_Write_Full_And_Check is
 
-   type EEP_DIP_Valid_Selector is new Integer range
+   use HAL;
+
+   type EEP_DIP_Valid_Selector is new HAL.UInt4 range
      EEPROM_I2C.EEPROM_Chip'Pos (EEPROM_I2C.EEC_MC24XX01) + 1
      ..
        EEPROM_I2C.EEPROM_Chip'Pos (EEPROM_I2C.EEC_MC24XX512) + 1;
@@ -30,7 +34,9 @@ procedure Pico_Write_Full_And_Check is
          3 => EEPROM_I2C.EEC_MC24XX16,
          4 => EEPROM_I2C.EEC_MC24XX64,
          5 => EEPROM_I2C.EEC_MC24XX512);
-   pragma Warnings (Off, All_DIPs);
+
+   Dip_Selector : HAL.UInt4 := 0;
+   EEP_Selected : EEPROM_I2C.EEPROM_Chip;
 
    --  Trigger button when to read/write the byte from the EEPROM
    --  This trigger is generated using a function generator
@@ -47,10 +53,41 @@ begin
    --  just some visual help
    Pico.LED.Set;
 
-   --  the full monty
-   Helpers.
-     Check_Full_Size (EEPROM_I2C.EEC_MC24XX01,
-                      Pico_LED.Pico_Led_Off'Access);
+   Dip_Selector := Helpers.Eeprom_Code_Selected;
+
+   --  check the DIP selector
+   if Dip_Selector < HAL.UInt4 (EEP_DIP_Valid_Selector'First)
+     or Dip_Selector > HAL.UInt4 (EEP_DIP_Valid_Selector'Last)
+   then
+      loop
+         Pico.LED.Clear;
+         Delay_Provider.Delay_MS (MS => 50);
+         Pico.LED.Set;
+         Delay_Provider.Delay_MS (MS => 50);
+      end loop;
+   end if;
+
+   --  show value
+   Delay_Provider.Delay_MS (MS => 1000);   Pico.LED.Clear;
+   Delay_Provider.Delay_MS (MS => 1000);
+   for Bleep in 1 .. Dip_Selector loop
+      Pico.LED.Set;
+      Delay_Provider.Delay_MS (MS => 250);
+      Pico.LED.Clear;
+      Delay_Provider.Delay_MS (MS => 250);
+   end loop;
+
+   Delay_Provider.Delay_MS (MS => 1000);
+   Pico.LED.Set;
+
+   if False then
+      EEP_Selected := All_DIPs (EEP_DIP_Valid_Selector (Dip_Selector));
+
+      --  the full monty
+      Helpers.
+        Check_Full_Size (EEP_Selected,
+                         Pico_LED.Pico_Led_Off'Access);
+   end if;
 
    --  headers involved
    --     Helpers.

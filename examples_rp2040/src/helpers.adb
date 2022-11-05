@@ -88,7 +88,7 @@ package body Helpers is
                           CB_LED_Off : LED_Off);
 
    procedure Initialize  (Trigger_Port : RP.GPIO.GPIO_Point;
-                         Frequency    : Natural) is
+                          Frequency    : Natural) is
    begin
       --  standard initialization
       RP.Clock.Initialize (Frequency);
@@ -104,6 +104,20 @@ package body Helpers is
                                           Pull => RP.GPIO.Pull_Up,
                                           Func => RP.GPIO.I2C);
       Configuration.Eeprom_I2C_Port.Configure (Baudrate => 400_000);
+
+      --  Configure the DIP input ports
+      Configuration.DIP_1.Configure (Mode => RP.GPIO.Input,
+                                     Pull => RP.GPIO.Pull_Down,
+                                     Func => RP.GPIO.SIO);
+      Configuration.DIP_2.Configure (Mode => RP.GPIO.Input,
+                                     Pull => RP.GPIO.Pull_Down,
+                                     Func => RP.GPIO.SIO);
+      Configuration.DIP_4.Configure (Mode => RP.GPIO.Input,
+                                     Pull => RP.GPIO.Pull_Down,
+                                     Func => RP.GPIO.SIO);
+      Configuration.DIP_8.Configure (Mode => RP.GPIO.Input,
+                                     Pull => RP.GPIO.Pull_Down,
+                                     Func => RP.GPIO.SIO);
 
       The_Trigger := Trigger_Port;
       --  define a trigger input to enable oscilloscope tracking
@@ -149,6 +163,24 @@ package body Helpers is
          exit when not RP.GPIO.Get (The_Trigger);
       end loop;
    end Wait_For_Trigger_Resume;
+
+   function Eeprom_Code_Selected return HAL.UInt4 is
+      Result : HAL.UInt4 := 2#0000#;
+   begin
+      if Configuration.DIP_1.Get then
+         Result := Result or 2#0001#;
+      end if;
+      if Configuration.DIP_2.Get then
+         Result := Result or 2#0010#;
+      end if;
+      if Configuration.DIP_4.Get then
+         Result := Result or 2#0100#;
+      end if;
+      if Configuration.DIP_8.Get then
+         Result := Result or 2#1000#;
+      end if;
+      return Result;
+   end Eeprom_Code_Selected;
 
    procedure Fill_With_Random_Data (Fill_Data : out HAL.I2C.I2C_Data) is
       LUT_Index : Natural := Random_UInt_8.LUT'First;
