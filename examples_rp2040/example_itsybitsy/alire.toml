@@ -27,8 +27,6 @@ gnat_arm_elf = "^12"  # Added by alr
 
 [[depends-on]]  # Added by alr
 itsybitsy_rp2040_bsp = "~0.2.0"  # Added by alr
-[[pins]]
-itsybitsy_rp2040_bsp = { path='../../../itsybitsy_rp2040_bsp' }
 
 [[depends-on]]  # Added by alr
-eeprom_i2c = "^4"  # Added by alr
+eeprom_i2c = "^5"  # Added by alr

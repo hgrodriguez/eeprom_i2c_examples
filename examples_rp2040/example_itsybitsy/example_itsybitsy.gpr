@@ -17,13 +17,13 @@ project Example_ItsyBitsy is
    for Main use ("itsybitsy_write_full_and_check");
 
    type Enabled_Kind is ("enabled", "disabled");
-   Compile_Checks : Enabled_Kind := External ("EEPROM_I2C_EXAMPLES_COMPILE_CHECKS", "disabled");
-   Runtime_Checks : Enabled_Kind := External ("EEPROM_I2C_EXAMPLES_RUNTIME_CHECKS", "disabled");
-   Style_Checks : Enabled_Kind := External ("EEPROM_I2C_EXAMPLES_STYLE_CHECKS", "disabled");
-   Contracts_Checks : Enabled_Kind := External ("EEPROM_I2C_EXAMPLES_CONTRACTS", "disabled");
+   Compile_Checks : Enabled_Kind := External ("EXAMPLE_ITSYBITSY_COMPILE_CHECKS", "enabled");
+   Runtime_Checks : Enabled_Kind := External ("EXAMPLE_ITSYBITSY_RUNTIME_CHECKS", "disabled");
+   Style_Checks : Enabled_Kind := External ("EXAMPLE_ITSYBITSY_STYLE_CHECKS", "enabled");
+   Contracts_Checks : Enabled_Kind := External ("EXAMPLE_ITSYBITSY_CONTRACTS", "disabled");
 
    type Build_Kind is ("debug", "optimize");
-   Build_Mode : Build_Kind := External ("EEPROM_I2C_EXAMPLES_BUILD_MODE", "debug");
+   Build_Mode : Build_Kind := External ("EXAMPLE_ITSYBITSY_BUILD_MODE", "debug");
 
    Compile_Checks_Switches := ();
    case Compile_Checks is
@@ -81,12 +81,7 @@ project Example_ItsyBitsy is
         Contracts_Switches &
           ("-Og",
            "-g",
-           "-gnatwa",       --  All warnings
            "-gnatwl",       --  Elaboration warnings
-           "-gnatVa",       --  Validity checks
-           "-gnatyg",       --  Style checks
-           "-gnatyM120",    --  Line length
-           "-gnatyO",       --  Overriding subprograms must be explicitly marked
            "-gnatQ",        --  Keep going after errors
            "-gnatw.X",      --  Hide No_Exception_Propagation warnings
            "-gnatwB",       --  Hide Warn_On_Bad_Fixed_Value
@@ -102,8 +97,8 @@ project Example_ItsyBitsy is
 
    package Linker is
       for Default_Switches ("Ada") use
-          ItsyBitsy_RP2040_BSP.Linker_Switches;
---          ("-Wl,--print-memory-usage,--gc-sections");
+          ItsyBitsy_RP2040_BSP.Linker_Switches &
+          ("-Wl,--print-memory-usage,--gc-sections");
    end Linker;
 
 end Example_ItsyBitsy;
