@@ -80,14 +80,12 @@ begin
    Delay_Provider.Delay_MS (MS => 1000);
    Pico.LED.Set;
 
-   if False then
-      EEP_Selected := All_DIPs (EEP_DIP_Valid_Selector (Dip_Selector));
+   EEP_Selected := All_DIPs (EEP_DIP_Valid_Selector (Dip_Selector));
 
-      --  the full monty
-      Helpers.
-        Check_Full_Size (EEP_Selected,
-                         Pico_LED.Pico_Led_Off'Access);
-   end if;
+   --  the full monty
+   Helpers.
+     Check_Full_Size (EEP_Selected,
+                      Pico_LED.Pico_Led_Off'Access);
 
    --  headers involved
    --     Helpers.
