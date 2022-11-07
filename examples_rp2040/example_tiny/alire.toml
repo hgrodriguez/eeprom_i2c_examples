@@ -26,9 +26,7 @@ USB_EMBEDDED_BUILD_MODE="debug"
 gnat_arm_elf = "^12"  # Added by alr
 
 [[depends-on]]  # Added by alr
-tiny_rp2040_bsp = "~0.2.0"  # Added by alr
-[[pins]]
-tiny_rp2040_bsp = { path='../../../tiny_rp2040_bsp' }
+tiny_rp2040_bsp = "~0.2.1"  # Added by alr
 
 [[depends-on]]  # Added by alr
-eeprom_i2c = "^4"  # Added by alr
+eeprom_i2c = "^5"  # Added by alr
