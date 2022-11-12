@@ -14,6 +14,19 @@ with EEPROM_I2C;
 
 package Helpers is
 
+   use HAL;
+   type EEP_DIP_Valid_Selector is new HAL.UInt4 range
+     EEPROM_I2C.EEPROM_Chip'Pos (EEPROM_I2C.EEC_MC24XX01) + 1
+     ..
+       EEPROM_I2C.EEPROM_Chip'Pos (EEPROM_I2C.EEC_MC24XX512) + 1;
+
+   All_DIPs : constant array (EEP_DIP_Valid_Selector) of EEPROM_I2C.EEPROM_Chip
+     := (1 => EEPROM_I2C.EEC_MC24XX01,
+         2 => EEPROM_I2C.EEC_MC24XX02,
+         3 => EEPROM_I2C.EEC_MC24XX16,
+         4 => EEPROM_I2C.EEC_MC24XX64,
+         5 => EEPROM_I2C.EEC_MC24XX512);
+
    type LED_Off is access procedure;
 
    procedure Initialize (Trigger_Port : RP.GPIO.GPIO_Point;
@@ -27,6 +40,13 @@ package Helpers is
    procedure Wait_For_Trigger_Resume;
 
    function Eeprom_Code_Selected return HAL.UInt4;
+
+   function Code_Selected_Is_Valid (Code : HAL.UInt4) return Boolean;
+
+   procedure Display_Code_Selected (Code : HAL.UInt4);
+
+   procedure Display_Failure;
+   procedure Display_Success;
 
    procedure Check_Full_Size (EEP_Enum   : EEPROM_I2C.EEPROM_Chip;
                               CB_LED_Off : LED_Off);

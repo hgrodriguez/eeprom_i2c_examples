@@ -15,6 +15,8 @@ with RP.I2C_Master;
 
 with Configuration;
 
+with LTP_305;
+
 with Delay_Provider;
 
 with Random_UInt_8;
@@ -26,6 +28,8 @@ with EEPROM_I2C.MC24XX64;
 with EEPROM_I2C.MC24XX512;
 
 package body Helpers is
+
+   package PLDM renames LTP_305;
 
    --  potential test targets
    Eeprom_1K       : aliased EEPROM_I2C.MC24XX01.EEPROM_Memory_MC24XX01
@@ -74,8 +78,6 @@ package body Helpers is
           EEPROM_I2C.EEC_MC24XX64  => Helpers.Eeprom_64K'Access,
           EEPROM_I2C.EEC_MC24XX512 => Helpers.Eeprom_512K'Access);
 
-   use HAL;
-
    use EEPROM_I2C;
 
    THE_TIMEOUT_IN_MS : constant Natural := 1_000;
@@ -86,6 +88,30 @@ package body Helpers is
    procedure Verify_Data (Expected   : in out HAL.I2C.I2C_Data;
                           Actual     : in out HAL.I2C.I2C_Data;
                           CB_LED_Off : LED_Off);
+
+   procedure Initialize_Matrix;
+   procedure Initialize_Matrix is
+      Init_Options : constant HAL.UInt8 := 2#00001110#;
+      --  1110 = 35 mA; 0000 = 40 mA
+      Init_Mode    : constant HAL.UInt8 := 2#00011000#;
+   begin
+      PLDM.Write_Byte_Data (This    => Configuration.Eeprom_I2C_Port'Access,
+                            Address => Configuration.Matrix_Address,
+                            Cmd     => PLDM.Reset,
+                            B       => 16#FF#);
+      PLDM.Write_Byte_Data (This    => Configuration.Eeprom_I2C_Port'Access,
+                            Address => Configuration.Matrix_Address,
+                            Cmd     => PLDM.Mode,
+                            B       => Init_Mode);
+      PLDM.Write_Byte_Data (This    => Configuration.Eeprom_I2C_Port'Access,
+                            Address => Configuration.Matrix_Address,
+                            Cmd     => PLDM.Options,
+                            B       => Init_Options);
+      PLDM.Write_Byte_Data (This    => Configuration.Eeprom_I2C_Port'Access,
+                            Address => Configuration.Matrix_Address,
+                            Cmd     => PLDM.Brightness,
+                            B       => 255);
+   end Initialize_Matrix;
 
    procedure Initialize  (Trigger_Port : RP.GPIO.GPIO_Point;
                           Frequency    : Natural) is
@@ -125,6 +151,8 @@ package body Helpers is
                          Mode => RP.GPIO.Input,
                          Pull => RP.GPIO.Pull_Down,
                          Func => RP.GPIO.SIO);
+
+      Initialize_Matrix;
    end Initialize;
 
    Trigger    : Boolean := False;
@@ -181,6 +209,60 @@ package body Helpers is
       end if;
       return Result;
    end Eeprom_Code_Selected;
+
+   function Code_Selected_Is_Valid (Code : HAL.UInt4) return Boolean is
+   begin
+      if Code < HAL.UInt4 (Helpers.EEP_DIP_Valid_Selector'First)
+        or Code > HAL.UInt4 (Helpers.EEP_DIP_Valid_Selector'Last)
+      then
+         return False;
+      else
+         return True;
+      end if;
+   end Code_Selected_Is_Valid;
+
+   procedure Display_Code_Selected (Code : HAL.UInt4) is
+   begin
+      PLDM.Write (This    => Configuration.Eeprom_I2C_Port'Access,
+                  Address => Configuration.Matrix_Address,
+                  Location => PLDM.Matrix_L,
+                  Code    => Integer (Code) + 48,
+                  DP       => True);
+      PLDM.Write_Byte_Data (This    => Configuration.Eeprom_I2C_Port'Access,
+                            Address => Configuration.Matrix_Address,
+                            Cmd     => PLDM.Update,
+                            B       => 1);
+
+      if not Code_Selected_Is_Valid (Code) then
+         Display_Failure;
+      end if;
+   end Display_Code_Selected;
+
+   procedure Display_Failure is
+   begin
+      PLDM.Write (This    => Configuration.Eeprom_I2C_Port'Access,
+                  Address => Configuration.Matrix_Address,
+                  Location => PLDM.Matrix_R,
+                  Code    => 8595,
+                  DP       => True);
+      PLDM.Write_Byte_Data (This    => Configuration.Eeprom_I2C_Port'Access,
+                            Address => Configuration.Matrix_Address,
+                            Cmd     => PLDM.Update,
+                            B       => 1);
+   end Display_Failure;
+
+   procedure Display_Success is
+   begin
+      PLDM.Write (This    => Configuration.Eeprom_I2C_Port'Access,
+                  Address => Configuration.Matrix_Address,
+                  Location => PLDM.Matrix_R,
+                  Code    => 8593,
+                  DP       => True);
+      PLDM.Write_Byte_Data (This    => Configuration.Eeprom_I2C_Port'Access,
+                            Address => Configuration.Matrix_Address,
+                            Cmd     => PLDM.Update,
+                            B       => 1);
+   end Display_Success;
 
    procedure Fill_With_Random_Data (Fill_Data : out HAL.I2C.I2C_Data) is
       LUT_Index : Natural := Random_UInt_8.LUT'First;

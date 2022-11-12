@@ -4,6 +4,8 @@ with "config/example_pico_config.gpr";
 
 with "eeprom_i2c.gpr";
 
+with "ltp_305.gpr";
+
 project Example_Pico is
 
    for Runtime ("Ada") use "light-cortex-m0p";

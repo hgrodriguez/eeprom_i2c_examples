@@ -1,3 +1,5 @@
+with HAL.I2C;
+
 with RP.Device;
 with RP.GPIO;
 with RP.I2C_Master;
@@ -11,9 +13,13 @@ package Configuration is
    Eeprom_SDA      : RP.GPIO.GPIO_Point renames Pico.GP0;
    Eeprom_SCL      : RP.GPIO.GPIO_Point renames Pico.GP1;
 
+   --  Definitions for the Pimoroni LED Matrix
+   use HAL;
+   Matrix_Address : constant HAL.I2C.I2C_Address := 16#62# * 2;
+
    --  Definitions for the DIP switch ports to read
-   DIP_1 : RP.GPIO.GPIO_Point renames Pico.GP12;
-   DIP_2 : RP.GPIO.GPIO_Point renames Pico.GP13;
-   DIP_4 : RP.GPIO.GPIO_Point renames Pico.GP14;
-   DIP_8 : RP.GPIO.GPIO_Point renames Pico.GP15;
+   DIP_1 : RP.GPIO.GPIO_Point renames Pico.GP19;
+   DIP_2 : RP.GPIO.GPIO_Point renames Pico.GP18;
+   DIP_4 : RP.GPIO.GPIO_Point renames Pico.GP17;
+   DIP_8 : RP.GPIO.GPIO_Point renames Pico.GP16;
 end Configuration;

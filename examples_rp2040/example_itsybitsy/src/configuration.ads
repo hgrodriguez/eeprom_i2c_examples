@@ -1,3 +1,5 @@
+with HAL.I2C;
+
 with RP.GPIO;
 with RP.I2C_Master;
 
@@ -10,9 +12,13 @@ package Configuration is
    Eeprom_SDA      : RP.GPIO.GPIO_Point renames ItsyBitsy.GP26;
    Eeprom_SCL      : RP.GPIO.GPIO_Point renames ItsyBitsy.GP27;
 
+   --  Definitions for the Pimoroni LED Matrix
+   use HAL;
+   Matrix_Address : constant HAL.I2C.I2C_Address := 16#61# * 2;
+
    --  Definitions for the DIP switch ports to read
-   DIP_1 : RP.GPIO.GPIO_Point renames ItsyBitsy.GP18;
-   DIP_2 : RP.GPIO.GPIO_Point renames ItsyBitsy.GP19;
-   DIP_4 : RP.GPIO.GPIO_Point renames ItsyBitsy.GP20;
-   DIP_8 : RP.GPIO.GPIO_Point renames ItsyBitsy.GP12;
+   DIP_1 : RP.GPIO.GPIO_Point renames ItsyBitsy.GP3;
+   DIP_2 : RP.GPIO.GPIO_Point renames ItsyBitsy.GP2;
+   DIP_4 : RP.GPIO.GPIO_Point renames ItsyBitsy.GP0;
+   DIP_8 : RP.GPIO.GPIO_Point renames ItsyBitsy.GP1;
 end Configuration;

@@ -31,3 +31,7 @@ gnat_arm_elf = "^12"  # Added by alr
 eeprom_i2c = "^5.0.0"
 [[depends-on]]
 pico_bsp = "^2.0.0"
+[[depends-on]]
+ltp_305 = "~0.2.0"
+[[pins]]
+ltp_305 = { path='../../../ltp_305' }
