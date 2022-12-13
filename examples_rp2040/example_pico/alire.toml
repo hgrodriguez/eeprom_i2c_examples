@@ -33,5 +33,3 @@ eeprom_i2c = "^5.0.0"
 pico_bsp = "^2.0.0"
 [[depends-on]]
 ltp_305 = "~0.2.0"
-[[pins]]
-ltp_305 = { path='../../../ltp_305' }

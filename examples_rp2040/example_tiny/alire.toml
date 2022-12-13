@@ -32,5 +32,3 @@ tiny_rp2040_bsp = "~0.2.1"  # Added by alr
 eeprom_i2c = "^5"  # Added by alr
 [[depends-on]]
 ltp_305 = "~0.2.0"
-[[pins]]
-ltp_305 = { path='../../../ltp_305' }
