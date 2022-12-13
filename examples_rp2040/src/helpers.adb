@@ -266,11 +266,18 @@ package body Helpers is
 
    procedure Fill_With_Random_Data (Fill_Data : out HAL.I2C.I2C_Data) is
       LUT_Index : Natural := Random_UInt_8.LUT'First;
+      --  we want to avoid, that the random LUT is shifted after every round
+      Rounds_In_Random_LUT : Natural := 1;
    begin
       for Idx in Fill_Data'First .. Fill_Data'Last loop
          Fill_Data (Idx) := Random_UInt_8.LUT (LUT_Index);
          if LUT_Index = Random_UInt_8.LUT'Last then
-            LUT_Index := Random_UInt_8.LUT'First;
+            --  round robin, but: add a shift in the index, so that the
+            --  LUT does not fill the very same patterns in the EEPROM
+            --  but shifts to ensure, that no pages are the same
+            LUT_Index := Random_UInt_8.LUT'First
+              + Rounds_In_Random_LUT * Natural (Eeprom_Code_Selected);
+            Rounds_In_Random_LUT := Rounds_In_Random_LUT + 1;
          else
             LUT_Index := LUT_Index + 1;
          end if;

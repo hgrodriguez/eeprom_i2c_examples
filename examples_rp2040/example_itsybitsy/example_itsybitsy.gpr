@@ -98,7 +98,7 @@ project Example_ItsyBitsy is
    package Linker is
       for Default_Switches ("Ada") use
           ItsyBitsy_RP2040_BSP.Linker_Switches &
-          ("-Wl,--print-memory-usage,--gc-sections");
+          ("-Wl,--print-memory-usage,--gc-sections,--no-warn-rwx-segments,--no-warn-execstack");
    end Linker;
 
 end Example_ItsyBitsy;
